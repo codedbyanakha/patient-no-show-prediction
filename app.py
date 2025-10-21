@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import json
+from sklearn.metrics import confusion_matrix, classification_report
 
 st.set_page_config(page_title="No-Show Prediction", layout="wide", page_icon="🎯")
 
@@ -155,3 +156,4 @@ if uploaded:
 
 st.sidebar.title("About")
 st.sidebar.write("Model: XGBoost. Preprocessing: lowercased columns, waiting_days, gender mapping, neighbourhood one-hot.")
+
