@@ -1,4 +1,4 @@
-# app.py
+# app.py                                                                                                                                                                             # app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -112,7 +112,7 @@ if st.button("🔍 Predict (Single)"):
 
     # Check for uniform predictions and warn
     if prob is not None and prob < 0.1:  # Arbitrary threshold; adjust if needed
-        st.warning("⚠️ Low probability for no-show detected. Model may be biased or inputs not impactful. Check debug info.")
+        st.warning("⚠ Low probability for no-show detected. Model may be biased or inputs not impactful. Check debug info.")
 
     # Debug section
     with st.expander("Debug Info"):
@@ -127,7 +127,6 @@ if st.button("🔍 Predict (Single)"):
         st.error(f"🚫 Prediction: NO-SHOW — Prob = {prob:.3f}" if prob is not None else "No-Show")
     else:
         st.success(f"✅ Prediction: WILL SHOW — Prob = {prob:.3f}" if prob is not None else "Will Show")
-
 # -------------------------
 # Batch Prediction
 # -------------------------
@@ -144,21 +143,10 @@ if uploaded:
         st.error("No rows remain after preprocessing.")
     else:
         X_batch = df_proc.copy()
-        X_in = scaler.transform(X_batch.values) if META.get("expects_scaled_input", False) else X_batch.values
+        X_in = scaler.transform(X_batch) if META.get("expects_scaled_input", False) else X_batch.values
 
-        preds = []
-        proba = []
-        for index, row in df_proc.iterrows():
-            if (row['waiting_days'] >= 16 and row['age'] >= 50) or \
-               (row['waiting_days'] >= 26) or \
-               (row['age'] >= 80):
-                preds.append(1)  # Predict no-show
-                proba.append(1.0)  # Set probability to 1 for this condition
-            else:
-                pred = model.predict(X_in[index:index+1])[0]
-                preds.append(pred)
-                proba_value = model.predict_proba(X_in[index:index+1])[0][1] if hasattr(model, "predict_proba") else None
-                proba.append(proba_value)
+        preds = model.predict(X_in)
+        proba = model.predict_proba(X_in)[:,1] if hasattr(model,"predict_proba") else None
 
         df_out = df_upload.copy()
         df_out.loc[df_proc.index, "prediction"] = preds
@@ -181,5 +169,4 @@ if uploaded:
             st.text(classification_report(y_true, y_pred))
 
 st.sidebar.title("About")
-st.sidebar.write("Model: XGBoost. Preprocessing: lowercased columns, waiting_days, gender mapping.")
-st.sidebar.write("**Note**: If predictions are always 'will show', check model training data for bias or retrain with balanced classes. Use debug info for troubleshooting.")
+st.sidebar.write("Model: XGBoost. Preprocessing: lowercased columns, waiting_days, gender mapping, neighbourhood one-hot.")
