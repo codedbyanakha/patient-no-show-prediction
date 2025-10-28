@@ -1,6 +1,8 @@
 # Patient No-Show Prediction Project (MSc Internship, July–September 2025)
 Welcome to my project repository for the No-Show Prediction mini-project, conducted as part of my MSc Data Science program. The goal was to predict whether a patient would attend or miss their medical appointment using machine learning, while ensuring fairness, interpretability, and deployability through a Streamlit web app.
 
+**LIVE APP:** https://patient-no-show-prediction-nacmezuzsqtpudkfzjklki.streamlit.app/
+
 📋 PROJECT OVERVIEW
 
 Role: Data Science Intern
